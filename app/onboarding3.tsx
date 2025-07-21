@@ -1,130 +1,147 @@
-// app/(auth)/onboarding3.js
-import { View, Text, Image, ImageBackground, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
 
 export default function Onboarding3() {
   const router = useRouter();
 
   return (
-    <ImageBackground
-      source={require('@/assets/images/bg.jpg')}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <View style={styles.overlay}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+
+        {/* Logo */}
         <Image
           source={require('@/assets/images/logo.png')}
           style={styles.logo}
           resizeMode="contain"
         />
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.cardContainer}
-        >
-           <Image source={require('@/assets/images/image1.jpg')} style={styles.card} />
-           <Image source={require('@/assets/images/image2.jpg')} style={styles.card} />
-           <Image source={require('@/assets/images/image3.jpg')} style={styles.card} />
-        </ScrollView>
+        {/* Yellow Wave Background with Illustration */}
+        <View style={styles.yellowBackground}>
+          <Image
+            source={require('@/assets/images/img2.png')} // Replace with actual image for screen 3
+            style={styles.illustration}
+            resizeMode="contain"
+          />
+        </View>
 
+        {/* Text */}
         <Text style={styles.title}>Sell Smarter, Not Harder</Text>
-
         <Text style={styles.description}>
           List items in seconds, reach more buyers, and turn your unused goods into cash – all with MEGO!
         </Text>
 
+        {/* Dots */}
+        <View style={styles.dotsContainer}>
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+          <View style={[styles.dot, styles.activeDot]} />
+        </View>
+
+        {/* Buttons */}
         <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={styles.skipButton}
-            onPress={() => router.back()}
-          >
-            <Text style={styles.skipText}>Back</Text>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Text style={styles.skip}>Back</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.nextButton}
-            onPress={() => router.push('/login')} // Next screen is login/signup
+            onPress={() => router.replace('/login')} // Go to login/signup
           >
             <Text style={styles.nextText}>Get Started</Text>
           </TouchableOpacity>
         </View>
+
       </View>
-    </ImageBackground>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
+  safeArea: {
     flex: 1,
+    backgroundColor: '#fff',
   },
-  overlay: {
+  container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
     paddingHorizontal: 20,
-    paddingTop: 50,
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
   logo: {
-    width: 120,
-    height: 60,
-    alignSelf: 'center',
-    marginBottom: 20,
+    width: 150,
+    height: 100,
+    marginTop: 20,
   },
-  cardContainer: {
-    paddingHorizontal: 10,
+  yellowBackground: {
+    backgroundColor: '#FFEB3B', // Bright yellow
+  borderTopLeftRadius: 50,
+  borderTopRightRadius: 50,
+  borderBottomLeftRadius: 50,
+  borderBottomRightRadius: 50,
+  padding: 20,
+  marginVertical: 20,
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%',
   },
-  card: {
-    width: 140,
-    height: 200,
-    borderRadius: 12,
-    marginRight: 15,
-    backgroundColor: '#fff',
-    resizeMode: 'cover',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
+  illustration: {
+     width: '100%',
+  height: height * 0.25,
   },
   title: {
-    color: '#fff',
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#000',
     textAlign: 'center',
-    marginBottom: 10,
+    paddingHorizontal: 10,
+    marginTop: 10,
   },
   description: {
-    color: '#ccc',
     fontSize: 14,
+    color: '#555',
     textAlign: 'center',
-    marginHorizontal: 10,
-    marginBottom: 30,
+    paddingHorizontal: 20,
+    marginTop: 10,
+  },
+  dotsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#ccc',
+    marginHorizontal: 5,
+  },
+  activeDot: {
+    backgroundColor: '#0047BB',
+    width: 10,
+    height: 10,
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 20,
     marginBottom: 30,
   },
-  skipButton: {
-    borderWidth: 1,
-    borderColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 5,
+  skip: {
+    fontSize: 16,
+    color: '#0047BB',
   },
   nextButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#0047BB',
+    paddingHorizontal: 24,
     paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 5,
-  },
-  skipText: {
-    color: '#fff',
-    fontSize: 16,
+    borderRadius: 8,
   },
   nextText: {
-    color: '#fff',
     fontSize: 16,
+    color: '#fff',
+    fontWeight: '600',
   },
 });

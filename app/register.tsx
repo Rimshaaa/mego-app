@@ -1,120 +1,150 @@
-// app/(auth)/register.js
-import { View, Text, Image, TextInput, TouchableOpacity, ImageBackground, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Register() {
   const router = useRouter();
 
   return (
-    <ImageBackground
-      source={require('@/assets/images/bg.jpg')}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <View style={styles.overlay}>
-        <Image
-          source={require('@/assets/images/logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
 
-        <Text style={styles.title}>Create an Account</Text>
+        {/* Title */}
+        <Text style={styles.title}>Register</Text>
 
-        <TextInput
-          placeholder="Full Name"
-          placeholderTextColor="#ccc"
-          style={styles.input}
-        />
+        {/* Google Login */}
+        <TouchableOpacity style={styles.socialButton}>
+          <Image
+            source={require('@/assets/icons/google.png')}
+            style={styles.icon}
+          />
+          <Text style={styles.socialText}>Login with Google</Text>
+        </TouchableOpacity>
 
-        <TextInput
-          placeholder="Email"
-          placeholderTextColor="#ccc"
-          style={styles.input}
-        />
+        {/* Facebook Login */}
+        <TouchableOpacity style={styles.socialButton}>
+          <Image
+            source={require('@/assets/icons/facebook.png')}
+            style={styles.icon}
+          />
+          <Text style={styles.socialText}>Login with Facebook</Text>
+        </TouchableOpacity>
 
-        <TextInput
-          placeholder="Password"
-          placeholderTextColor="#ccc"
-          secureTextEntry
-          style={styles.input}
-        />
+        {/* OR Divider */}
+        <View style={styles.dividerContainer}>
+          <View style={styles.line} />
+          <Text style={styles.orText}>OR</Text>
+          <View style={styles.line} />
+        </View>
 
-        <TextInput
-          placeholder="Confirm Password"
-          placeholderTextColor="#ccc"
-          secureTextEntry
-          style={styles.input}
-        />
+        {/* Signup with Mail */}
+        <TouchableOpacity style={styles.altButton} onPress={() => router.push('/SignupEmail')}>
+          <Image source={require('@/assets/icons/mail.png')} style={styles.altIcon} />
+          <Text style={styles.altText}>Signup with mail</Text>
+        </TouchableOpacity>
 
-<TouchableOpacity
-  style={styles.registerButton}
-  onPress={() => router.push('/verify')}
->
-  <Text style={styles.registerButtonText}>Sign Up</Text>
-</TouchableOpacity>
+        {/* Signup with Phone */}
+        <TouchableOpacity style={styles.altButton} onPress={() => router.push('/SignupPhone')}>
+          <Image source={require('@/assets/icons/phone.png')} style={styles.altIcon} />
+          <Text style={styles.altText}>Signup with phone</Text>
+        </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.loginLink}
-          onPress={() => router.push('/login')}
-        >
+        {/* Already have account */}
+        <TouchableOpacity style={styles.loginLink} onPress={() => router.push('/login')}>
           <Text style={styles.loginText}>
-            Already have an account? <Text style={{ fontWeight: 'bold', color: '#fff' }}>Login</Text>
+            Already have an account? <Text style={styles.loginBold}>Login</Text>
           </Text>
         </TouchableOpacity>
+
       </View>
-    </ImageBackground>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
+  safeArea: {
     flex: 1,
+    backgroundColor: '#fff',
   },
-  overlay: {
+  container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 80,
-    alignItems: 'center',
+    paddingTop: 150,
   },
-  logo: {
-    width: 150,
-    height: 70,
-    marginBottom: 30,
-  },
+  
   title: {
-    fontSize: 28,
-    color: '#fff',
+    fontSize: 26,
     fontWeight: 'bold',
+    color: '#000',
     marginBottom: 30,
   },
-  input: {
-    width: '100%',
-    height: 50,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginBottom: 15,
-    color: '#fff',
-  },
-  registerButton: {
-    backgroundColor: '#28a745',
-    width: '100%',
-    paddingVertical: 15,
-    borderRadius: 10,
+  socialButton: {
+    flexDirection: 'row',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 30,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    width: '100%',
+    marginBottom: 15,
+    justifyContent: 'center',
+  },
+  icon: {
+    width: 20,
+    height: 20,
+    marginRight: 12,
+  },
+  socialText: {
+    fontSize: 16,
+    color: '#000',
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
     marginVertical: 20,
   },
-  registerButtonText: {
-    color: '#fff',
-    fontSize: 18,
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#ccc',
+  },
+  orText: {
+    marginHorizontal: 10,
+    color: '#999',
     fontWeight: 'bold',
   },
+  altButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 30,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    width: '100%',
+    marginBottom: 15,
+    justifyContent: 'center',
+  },
+  altIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+  },
+  altText: {
+    fontSize: 16,
+    color: '#000',
+  },
   loginLink: {
-    marginTop: 10,
+    marginTop: 20,
   },
   loginText: {
-    color: '#ccc',
     fontSize: 14,
+    color: '#555',
+  },
+  loginBold: {
+    fontWeight: 'bold',
+    color: '#0047BB',
   },
 });

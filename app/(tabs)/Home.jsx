@@ -1,22 +1,32 @@
+import ProductSection from '@/components/ProductSection';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
   Image,
+  ScrollView,
+  StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+
+// Image map for resolving imageKey to actual image source
+const imageMap = {
+  iphone14: require('@/assets/images/iphone14.webp'),
+  samsung: require('@/assets/images/samsung.webp'),
+  macbook: require('@/assets/images/macbook.jpg'),
+  sonycamera: require('@/assets/images/sonycamera.jpg'),
+};
 
 const categories = [
-  { label: 'Mobiles', icon: require('../../assets/images/iphone12.png') },
-  { label: 'Property for Sale', icon: require('../../assets/images/property.jpg') },
-  { label: 'Vehicles', icon: require('../../assets/images/vehicle.jpg') },
-  { label: 'Business Industrial', icon: require('../../assets/images/business.jpg') },
-  { label: 'Fashions', icon: require('../../assets/images/fashion.png') },
+  { label: 'Mobiles', icon: require('@/assets/images/iphone12.png') },
+  { label: 'Property', icon: require('@/assets/images/property.jpg') },
+  { label: 'Vehicles', icon: require('@/assets/images/vehicle.jpg') },
+  { label: 'Business', icon: require('@/assets/images/business.jpg') },
+  { label: 'Fashion', icon: require('@/assets/images/fashion.png') },
+  { label: 'Books', icon: require('@/assets/images/books.jpg') },
 ];
 
 const featuredProducts = [
@@ -28,7 +38,7 @@ const featuredProducts = [
     rating: '10/10',
     points: '16',
     date: '22 Sep',
-    image: require('../../assets/images/iphone14.webp'),
+    imageKey: 'iphone14',
   },
   {
     title: 'Samsung Galaxy S22',
@@ -38,7 +48,7 @@ const featuredProducts = [
     rating: '9/10',
     points: '14',
     date: '20 Sep',
-    image: require('../../assets/images/samsung.webp'),
+    imageKey: 'samsung',
   },
 ];
 
@@ -51,7 +61,7 @@ const mostViewedProducts = [
     rating: '9/10',
     points: '15',
     date: '21 Sep',
-    image: require('../../assets/images/macbook.jpg'),
+    imageKey: 'macbook',
   },
   {
     title: 'Sony Camera',
@@ -61,81 +71,43 @@ const mostViewedProducts = [
     rating: '9/10',
     points: '12',
     date: '18 Sep',
-    image: require('../../assets/images/sonycamera.jpg'),
+    imageKey: 'sonycamera',
   },
 ];
-
-const ProductSection = ({ title, products }) => {
-  const router = useRouter();
-  return (
-    <View style={styles.productSection}>
-      <View style={styles.sectionRow}>
-        <Text style={styles.sectionTitle}>{title}</Text>
-        <TouchableOpacity><Text style={styles.seeMore}>See more</Text></TouchableOpacity>
-      </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {products.map((item, i) => (
-          <TouchableOpacity
-            key={i}
-            style={styles.productCard}
-            onPress={() =>
-              router.push({
-                pathname: '/product-details',
-                params: {
-                  ...item,
-                  image: Image.resolveAssetSource(item.image).uri,
-                },
-              })
-            }
-          >
-            <Image source={item.image} style={styles.productImage} />
-            <Text style={styles.productName}>{item.title}</Text>
-            <Text style={styles.productPrice}>Rs {item.price}</Text>
-            <View style={styles.metaRow}>
-              <Text style={styles.metaText}>{item.condition}</Text>
-              <Text style={styles.metaText}>{item.rating}</Text>
-              <Text style={styles.metaText}>{item.points} points</Text>
-            </View>
-            <Text style={styles.metaSub}>{item.location}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View>
-  );
-};
 
 export default function HomeScreen() {
   const router = useRouter();
 
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={styles.logo}
-        />
-        <View style={styles.headerIcons}>
-          <TouchableOpacity>
-            <Ionicons name="notifications-outline" size={22} color="#000" />
+        <Image source={require('@/assets/images/logo.png')} style={styles.logo} />
+        <View style={styles.iconBoxContainer}>
+          <TouchableOpacity style={styles.iconBox}>
+            <Ionicons name="notifications-outline" size={20} color="#000" />
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginLeft: 14 }}>
-            <Ionicons name="search" size={22} color="#000" />
+          <TouchableOpacity style={styles.iconBox} onPress={() => router.push('/search')}>
+            <Ionicons name="search" size={20} color="#000" />
           </TouchableOpacity>
         </View>
       </View>
 
       <ScrollView>
-        <View style={styles.locationBar}>
+        {/* Location Bar */}
+        <TouchableOpacity style={styles.locationBar} onPress={() => router.push('/search')}>
           <Ionicons name="location-outline" size={18} color="#555" />
           <TextInput
             placeholder="Gulberg Phase 4, Lahore"
+            placeholderTextColor="#000"
             style={styles.locationInput}
+            editable={false}
           />
-        </View>
+        </TouchableOpacity>
 
         {/* Categories */}
         <View style={styles.categorySection}>
-          <View style={styles.sectionRow}>
+          <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Browse Categories</Text>
             <TouchableOpacity onPress={() => router.push('/categories')}>
               <Text style={styles.seeMore}>See more</Text>
@@ -153,8 +125,17 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
 
-        <ProductSection title="Featured" products={featuredProducts} />
+        {/* Featured Products */}
+        <ProductSection
+          title="Featured"
+          count={featuredProducts.length}
+          products={featuredProducts.map((product) => ({
+            ...product,
+            image: imageMap[product.imageKey],
+          }))}
+        />
 
+        {/* Ad Banner */}
         <View style={styles.adContainer}>
           <View style={styles.adContent}>
             <View style={styles.adText}>
@@ -165,11 +146,19 @@ export default function HomeScreen() {
               <Text style={styles.adSubtitle}>Free Metcon</Text>
               <Text style={styles.adPrice}>$ 120.99</Text>
             </View>
-            <Image source={require('../../assets/images/nike.png')} style={styles.adImage} />
+            <Image source={require('@/assets/images/nike.png')} style={styles.adImage} />
           </View>
         </View>
 
-        <ProductSection title="Most Viewed" products={mostViewedProducts} />
+        {/* Most Viewed */}
+        <ProductSection
+          title="Most Viewed"
+          count={mostViewedProducts.length}
+          products={mostViewedProducts.map((product) => ({
+            ...product,
+            image: imageMap[product.imageKey],
+          }))}
+        />
       </ScrollView>
     </View>
   );
@@ -177,34 +166,132 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 50, paddingBottom: 10 },
-  logo: { width: 100, height: 40, resizeMode: 'contain' },
-  headerIcons: { flexDirection: 'row', alignItems: 'center' },
-  locationBar: { flexDirection: 'row', alignItems: 'center', margin: 16, backgroundColor: '#f1f1f1', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 8 },
-  locationInput: { marginLeft: 10, flex: 1 },
-  categorySection: { marginTop: 10, paddingHorizontal: 16 },
-  sectionRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
-  sectionTitle: { fontSize: 16, fontWeight: '700' },
-  seeMore: { color: '#007AFF', fontSize: 13 },
-  categoryItem: { alignItems: 'center', marginRight: 20 },
-  categoryCircle: { width: 60, height: 60, backgroundColor: '#ddd', borderRadius: 30, marginBottom: 5, justifyContent: 'center', alignItems: 'center' },
-  categoryIcon: { width: 36, height: 36, resizeMode: 'contain' },
-  categoryText: { fontSize: 12, textAlign: 'center' },
-  productSection: { marginTop: 10, paddingHorizontal: 16 },
-  productCard: { width: 160, marginRight: 12, backgroundColor: '#F9F9F9', padding: 10, borderRadius: 10 },
-  productImage: { width: '100%', height: 90, borderRadius: 8, resizeMode: 'contain', backgroundColor: '#ddd' },
-  productName: { fontWeight: '600', marginTop: 6, fontSize: 13 },
-  productPrice: { color: '#0057FF', fontWeight: 'bold', marginTop: 2 },
-  metaRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 },
-  metaText: { fontSize: 10, color: '#666' },
-  metaSub: { fontSize: 10, color: '#999', marginTop: 2 },
-  adContainer: { marginHorizontal: 16, marginVertical: 10, backgroundColor: '#D9E8FB', borderRadius: 20, overflow: 'hidden' },
-  adContent: { flexDirection: 'row', alignItems: 'center', padding: 16 },
-  adText: { flex: 1 },
-  adLabel: { backgroundColor: '#FFD700', alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6, marginBottom: 6 },
-  adLabelText: { fontWeight: 'bold', fontSize: 12, color: '#000' },
-  adTitle: { fontSize: 22, fontWeight: 'bold', color: '#000' },
-  adSubtitle: { fontSize: 18, fontWeight: '600', color: '#666' },
-  adPrice: { fontSize: 18, fontWeight: 'bold', color: '#000', marginTop: 6 },
-  adImage: { width: 120, height: 120, resizeMode: 'contain', marginLeft: 10 },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    alignItems: 'center',
+  },
+  logo: {
+    width: 140,
+    height: 100,
+    resizeMode: 'contain',
+  },
+  iconBoxContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  iconBox: {
+    width: 36,
+    height: 36,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  locationBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f1f1f1',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    margin: 16,
+  },
+  locationInput: {
+    marginLeft: 10,
+    flex: 1,
+    color: '#000',
+  },
+  categorySection: {
+    marginTop: 10,
+    paddingHorizontal: 16,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  seeMore: {
+    fontSize: 13,
+    color: '#007AFF',
+  },
+  categoryItem: {
+    alignItems: 'center',
+    marginRight: 20,
+  },
+  categoryCircle: {
+    width: 60,
+    height: 60,
+    backgroundColor: '#eee',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  categoryIcon: {
+    width: 60,
+    height: 60,
+    resizeMode: 'cover',
+  },
+  categoryText: {
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  adContainer: {
+    margin: 16,
+    backgroundColor: '#D9E8FB',
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  adContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+  },
+  adText: {
+    flex: 1,
+  },
+  adLabel: {
+    backgroundColor: '#FFD700',
+    alignSelf: 'flex-start',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+    marginBottom: 6,
+  },
+  adLabelText: {
+    fontWeight: 'bold',
+    fontSize: 12,
+    color: '#000',
+  },
+  adTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  adSubtitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#666',
+  },
+  adPrice: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+    marginTop: 6,
+  },
+  adImage: {
+    width: 120,
+    height: 120,
+    resizeMode: 'contain',
+    marginLeft: 10,
+  },
 });

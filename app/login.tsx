@@ -1,179 +1,227 @@
-// app/(auth)/login.js
-import { View, Text, Image, TextInput, TouchableOpacity, ImageBackground, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import {
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 export default function Login() {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(true); // Simulate password error
 
   return (
-    <ImageBackground
-      source={require('@/assets/images/bg.jpg')}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <View style={styles.overlay}>
-        <Image
-          source={require('@/assets/images/logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        {/* Title */}
+        <Text style={styles.title}>Login</Text>
 
-        <Text style={styles.title}>Welcome Back!</Text>
-
+        {/* Email Field */}
         <TextInput
-          placeholder="Email"
-          placeholderTextColor="#ccc"
+          placeholder="E-mail"
+          placeholderTextColor="#888"
           style={styles.input}
+          defaultValue="johndoe@mail.com"
         />
 
-        <TextInput
-          placeholder="Password"
-          placeholderTextColor="#ccc"
-          secureTextEntry
-          style={styles.input}
-        />
+        {/* Password Field */}
+        <View style={styles.passwordContainer}>
+          <TextInput
+            placeholder="Password"
+            placeholderTextColor="#888"
+            secureTextEntry={!showPassword}
+            style={[styles.input, error && styles.inputError]}
+            defaultValue="8349328492"
+          />
+          <TouchableOpacity
+            style={styles.eyeIconWrapper}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            <Image
+              source={
+                showPassword
+                  ? require('@/assets/icons/eye-off.png')
+                  : require('@/assets/icons/eye.png')
+              }
+              style={styles.eyeIcon}
+            />
+          </TouchableOpacity>
+        </View>
 
-         <TouchableOpacity onPress={() => router.push('/forgotpassword')}>
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-        </TouchableOpacity>
+        {/* Error Message */}
+        {error && (
+          <Text style={styles.errorText}>
+            Incorrect password. Please check your password.
+          </Text>
+        )}
 
-        <TouchableOpacity style={styles.loginButton}
-        onPress={() => router.push('/Home')}
+        {/* Forgot Password */}
+        <TouchableOpacity
+          style={styles.forgotWrapper}
+          onPress={() => router.push('/forgotpassword')}
         >
-          <Text style={styles.loginButtonText}>Login</Text>
+          <Text style={styles.forgot}>Forgot Password?</Text>
         </TouchableOpacity>
 
-        {/* Divider */}
-        <View style={styles.dividerRow}>
+        {/* Login Button */}
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={() => router.push('/Home')}
+        >
+          <Text style={styles.loginText}>Login</Text>
+        </TouchableOpacity>
+
+        {/* OR Divider */}
+        <View style={styles.dividerContainer}>
           <View style={styles.line} />
-          <Text style={styles.orText}>OR</Text>
+          <Text style={styles.orText}>Or login with</Text>
           <View style={styles.line} />
         </View>
 
-        {/* Google Login Button */}
-        <TouchableOpacity style={styles.googleButton}>
+        {/* Google Login */}
+        <TouchableOpacity style={styles.socialButton}>
           <Image
-            source={require('@/assets/images/google.png')} // Add your google icon in assets
-            style={styles.googleIcon}
+            source={require('@/assets/icons/google.png')}
+            style={styles.icon}
           />
-          <Text style={styles.googleText}>Login with Google</Text>
+          <Text style={styles.socialText}>Login with Google</Text>
         </TouchableOpacity>
 
+        {/* Sign Up Link */}
         <TouchableOpacity
           style={styles.signUpLink}
           onPress={() => router.push('/register')}
         >
           <Text style={styles.signUpText}>
-            Don't have an account? <Text style={{ fontWeight: 'bold', color: '#fff' }}>Sign up</Text>
+            Don’t have an account? <Text style={styles.signUpBold}>Sign up</Text>
           </Text>
         </TouchableOpacity>
       </View>
-    </ImageBackground>
+    </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
-  background: {
+  safeArea: {
     flex: 1,
+    backgroundColor: '#fff',
   },
-  overlay: {
+  container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
     paddingHorizontal: 20,
-    paddingTop: 80,
-    alignItems: 'center',
-  },
-  logo: {
-    width: 150,
-    height: 70,
-    marginBottom: 30,
+    paddingTop: 100,
   },
   title: {
     fontSize: 28,
-    color: '#fff',
     fontWeight: 'bold',
-    marginBottom: 40,
+    color: '#000',
+    marginBottom: 30,
+    textAlign: 'center'
   },
   input: {
     width: '100%',
-    height: 50,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 10,
-    paddingHorizontal: 15,
+    height: 52,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    fontSize: 16,
     marginBottom: 15,
-    color: '#fff',
+    color: '#000',
+    backgroundColor: '#fff',
   },
-  forgotPasswordText: {
-    color: '#FFFFFF', // pure white
-    textAlign: 'center',
-    marginTop: 10,
-    fontWeight: '500',
+  inputError: {
+    borderColor: '#dc3545',
+  },
+  errorText: {
+    color: '#dc3545',
+    marginBottom: 5,
+    fontSize: 13,
+    marginLeft: 5,
+  },
+  passwordContainer: {
+    position: 'relative',
+  },
+  eyeIconWrapper: {
+    position: 'absolute',
+    right: 16,
+    top: 14,
+  },
+  eyeIcon: {
+    width: 22,
+    height: 22,
+    tintColor: '#888',
+  },
+  forgotWrapper: {
+    alignItems: 'flex-end',
+    marginBottom: 25,
+  },
+  forgot: {
     fontSize: 14,
-    opacity: 0.8, // slightly transparent white for smooth look
-  },
-  forgotPassword: {
-    alignSelf: 'flex-end',
-    marginBottom: 30,
-  },
-  forgotText: {
-    color: '#FFFFFF',
-    fontSize: 14,
+    color: '#007BFF',
+    fontWeight: '600',
   },
   loginButton: {
-    backgroundColor: '#007bff',
-    width: '100%',
-    paddingVertical: 15,
-    borderRadius: 10,
+    backgroundColor: '#0047BB',
+    paddingVertical: 14,
+    borderRadius: 30,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 25,
   },
-  loginButtonText: {
+  loginText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
-  dividerRow: {
+  dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 15,
-    width: '100%',
+    marginBottom: 25,
   },
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: '#888',
+    backgroundColor: '#ccc',
   },
   orText: {
-    color: '#aaa',
     marginHorizontal: 10,
+    color: '#888',
     fontSize: 14,
+    fontWeight: '600',
   },
-  googleButton: {
+  socialButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ccc',
     paddingVertical: 12,
     paddingHorizontal: 20,
-    borderRadius: 10,
-    width: '100%',
+    borderRadius: 30,
     justifyContent: 'center',
-    marginBottom: 30,
   },
-  googleIcon: {
-    width: 22,
-    height: 22,
-    marginRight: 10,
+  icon: {
+    width: 20,
+    height: 20,
+    marginRight: 12,
   },
-  googleText: {
+  socialText: {
     fontSize: 16,
-    color: '#333',
-    fontWeight: '500',
+    color: '#000',
   },
   signUpLink: {
-    marginTop: 10,
+    marginTop: 30,
+    alignItems: 'center',
   },
   signUpText: {
-    color: '#ccc',
     fontSize: 14,
+    color: '#555',
+  },
+  signUpBold: {
+    fontWeight: 'bold',
+    color: '#0047BB',
   },
 });

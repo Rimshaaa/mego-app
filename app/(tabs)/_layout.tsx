@@ -1,28 +1,40 @@
-import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Screens from tabs
-import MyAdsScreen from './my-ads';
-import HomeScreen from './Home';
 import ChatScreen from './Chats';
+import HomeScreen from './Home';
+import MyAdsScreen from './my-ads';
 import ProfileScreen from './my-profile';
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabs() {
   const navigation = useNavigation();
- const router = useRouter();
+  const router = useRouter();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
         tabBarStyle: {
-          height: 60,
+          height: 65,
+          paddingBottom: 4,
+          paddingTop: 4,
+        },
+        tabBarItemStyle: {
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: '500',
+          marginTop: -4,
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -37,10 +49,17 @@ export default function BottomTabs() {
             iconName = focused ? 'person' : 'person-outline';
           }
 
-          return iconName ? <Ionicons name={iconName} size={size} color={color} /> : null;
+          return (
+            <Ionicons
+              name={iconName}
+              size={22}
+              color={color}
+              style={{ marginBottom: -2 }}
+            />
+          );
         },
         tabBarActiveTintColor: '#007aff',
-        tabBarInactiveTintColor: 'gray',
+        tabBarInactiveTintColor: '#999',
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
@@ -48,15 +67,14 @@ export default function BottomTabs() {
 
       {/* Center Add (+) Button */}
       <Tab.Screen
-      
         name="Post"
-        component={View} // dummy screen
+        component={View} // dummy
         options={{
-         
           tabBarButton: (props) => (
             <TouchableOpacity
               {...props}
-              style={styles.fabButton} onPress={() => router.push('/PostAd')} // This should match the name in your root stack
+              style={styles.fabButton}
+              onPress={() => router.push('/PostAd')}
             >
               <Ionicons name="add" size={30} color="#fff" />
             </TouchableOpacity>
@@ -64,7 +82,7 @@ export default function BottomTabs() {
         }}
         listeners={{
           tabPress: (e) => {
-            e.preventDefault(); // disable default behavior
+            e.preventDefault(); // disable default tab change
           },
         }}
       />
@@ -77,13 +95,13 @@ export default function BottomTabs() {
 
 const styles = StyleSheet.create({
   fabButton: {
-    top: -20,
+    top: -25,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#007aff',
     width: 60,
     height: 60,
-    borderRadius: 30,
+    borderRadius: 12,
     shadowColor: '#000',
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 3 },
